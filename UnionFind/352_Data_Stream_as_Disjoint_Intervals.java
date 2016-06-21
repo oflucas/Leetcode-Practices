@@ -1,4 +1,4 @@
-// Total Accepted: 2060 Total Submissions: 5726 Difficulty: Hard
+//250ms 20% Total Accepted: 2060 Total Submissions: 5726 Difficulty: Hard
 /**
  * Definition for an interval.
  * public class Interval {
