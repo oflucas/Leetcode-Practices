@@ -31,11 +31,11 @@ public class SummaryRanges {
     /////
     public class UnionFindSet {
         HashMap<Integer, Integer> path;
-        HashMap<Integer, Interval> intv;
+        TreeMap<Integer, Interval> intv;
         
         public UnionFindSet() {
             path = new HashMap();
-            intv = new HashMap();
+            intv = new TreeMap();
         }
         
         public int mkInterv(int val) {
@@ -61,29 +61,27 @@ public class SummaryRanges {
         public void merge(int v1, int v2) {
             int i1 = find(v1), i2 = find(v2);
             if (i1 < 0 || i2 < 0) return; // merge fail
-            if (size(i1) > size(i2)) {
-                path.put(i2, i1);
-                Interval y = intv.get(i1), y1 = intv.get(i2);
-                y.start = Math.min(y.start, y1.start);
-                y.end = Math.max(y.end, y1.end);
-                intv.remove(i2);
-            } else {
-                path.put(i1, i2);
-                Interval y = intv.get(i2), y1 = intv.get(i1);
-                y.start = Math.min(y.start, y1.start);
-                y.end = Math.max(y.end, y1.end);
-                intv.remove(i1);
-            }
+            if (size(i1) > size(i2)) mergeFrTo(i2, i1); else mergeFrTo(i1, i2);
+        }
+        
+        public void mergeFrTo(int f, int t) {
+            path.put(f, t);
+            Interval y = intv.get(t), y1 = intv.get(f);
+            y.start = Math.min(y.start, y1.start);
+            y.end = Math.max(y.end, y1.end);
+            intv.remove(f);
         }
         
         public List<Interval> getIntervs() {
             List<Interval> res = new ArrayList(intv.values());
+            /*
             Collections.sort(res, new Comparator<Interval>() {
                 @Override
                 public int compare(Interval a, Interval b) {
                     return a.start - b.start;
                 }
             });
+            */
             return res;
         }
     }
