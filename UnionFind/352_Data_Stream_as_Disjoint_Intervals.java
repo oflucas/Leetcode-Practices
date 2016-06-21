@@ -12,14 +12,11 @@ public class SummaryRanges {
     UnionFindSet uf;
     /** Initialize your data structure here. */
     public SummaryRanges() {
-        UnionFindSet uf = new UnionFindSet();
-        if (uf != null) System.out.println("uf is not null");
-        uf.find(0);
+        uf = new UnionFindSet();
     }
     
     public void addNum(int val) {
-        System.out.println("addnum: " + val);
-        if (uf.find(val) != 0) return; // already has an interval
+        if (uf.find(val) >= 0) return; // already has an interval
         int i = uf.mkInterv(val);
         uf.merge(val, val - 1);
         uf.merge(val, val + 1);
@@ -37,7 +34,6 @@ public class SummaryRanges {
         HashMap<Integer, Interval> intv;
         
         public UnionFindSet() {
-            System.out.println("uf built");
             path = new HashMap();
             intv = new HashMap();
         }
@@ -49,8 +45,7 @@ public class SummaryRanges {
         }
         
         public int find(int val) {
-            System.out.println("uf finding - " + val);
-            if (!path.containsKey(val)) return 0;
+            if (!path.containsKey(val)) return -1;
             int x = path.get(val);
             if (x == val) return val;
             int y = find(x);
@@ -65,7 +60,7 @@ public class SummaryRanges {
         
         public void merge(int v1, int v2) {
             int i1 = find(v1), i2 = find(v2);
-            if (i1 == 0 || i2 == 0) return; // merge fail
+            if (i1 < 0 || i2 < 0) return; // merge fail
             if (size(i1) > size(i2)) {
                 path.put(i2, i1);
                 Interval y = intv.get(i1), y1 = intv.get(i2);
@@ -82,7 +77,14 @@ public class SummaryRanges {
         }
         
         public List<Interval> getIntervs() {
-            return new ArrayList(intv.values());
+            List<Interval> res = new ArrayList(intv.values());
+            Collections.sort(res, new Comparator<Interval>() {
+                @Override
+                public int compare(Interval a, Interval b) {
+                    return a.start - b.start;
+                }
+            });
+            return res;
         }
     }
 }
